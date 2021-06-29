@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 // const Schema = mongoose.Schema;
 //
 // const taskSchema = new Schema({
@@ -10,8 +10,8 @@ const app = express();
 //   isCheck: Boolean
 // });
 //
-// const uri = "mongodb+srv://admin:admin@cluster0.twjzz.mongodb.net/Database0?retryWrites=true&w=majority";
-// mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true});
+const uri = "mongodb+srv://admin:admin@cluster0.twjzz.mongodb.net/Database0?retryWrites=true&w=majority";
+mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true});
 
 // const Task = mongoose.model("tasks", taskSchema);
 

@@ -1,37 +1,35 @@
-const tasks = [];
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
-    text : String,
-    isCheck: Boolean
+    text: String,
+    isCheck: false
 });
-const uri = "mongodb+srv://admin:admin@cluster0.twjzz.mongodb.net/Database0?retryWrites=true&w=majority";
-mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true});
 
 const Task = mongoose.model("tasks", taskSchema);
 
 
 module.exports.getAllTasks = async (req, res, next) => {
-    Task.find().then(result => {
-        res.send({data: result});
-    })
+    try {
+        const result = await Task.find()
+        res.json(result)
+    }
+    catch(err) {
+        res.status(422).json(err.message);
+    }
+
 };
 
-module.exports.createNewTask = (req, res, next) => {
-
-    const body = req.body;
-    if (body.hasOwnProperty('text') && body.hasOwnProperty('isCheck')) {
+module.exports.createNewTask = async (req, res, next) => {
+    const {text} = req.body;
+    try {
         const task = new Task({
-            text: body.text,
-            isCheck: false
+            text: text
         });
-        task.save().then(result => {
-            res.send(result);
-        })
-    } else {
-        res.status(422).send('Error! Params not correct');
+        const result = await task.save()
+        res.json(result)
+    } catch (err) {
+        res.status(422).json(err.message);
     }
 };
 
@@ -40,17 +38,19 @@ module.exports.changeTaskInfo = async (req, res, next) => {
     console.log(body);
     if (body.hasOwnProperty('_id') && (body.hasOwnProperty('text') || body.hasOwnProperty('isCheck'))) {
         Task.findOneAndUpdate({_id: body._id}, {text: body.text, isCheck: body.isCheck}).then();
+        res.json()
     } else {
         res.status(422).send('Error! Params not correct');
     }
 };
 
 module.exports.deleteTask = async (req, res, next) => {
-    if (!req.query._id) {
-        return res.status(422).send('Error! Params not correct');
-    } else {
+    try {
         Task.findOneAndRemove({_id: req.query._id}).then(result => {
-            res.send({data: result});
-        })
+            res.status(200).send('')
+        });
+    }
+    catch (err) {
+        err.status(422).send('Error! Params not correct');
     }
 };
