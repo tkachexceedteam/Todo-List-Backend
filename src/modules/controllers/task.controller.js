@@ -1,13 +1,4 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
-const taskSchema = new Schema({
-    text: String,
-    isCheck: false
-});
-
-const Task = mongoose.model("tasks", taskSchema);
-
+const Task = require("../../db/models/task/index");
 
 module.exports.getAllTasks = async (req, res, next) => {
     try {
@@ -22,9 +13,11 @@ module.exports.getAllTasks = async (req, res, next) => {
 
 module.exports.createNewTask = async (req, res, next) => {
     const {text} = req.body;
+    const {backgroundColor} = req.body;
     try {
         const task = new Task({
-            text: text
+            text: text,
+            backgroundColor: backgroundColor
         });
         const result = await task.save()
         res.json(result)
@@ -35,11 +28,11 @@ module.exports.createNewTask = async (req, res, next) => {
 
 module.exports.changeTaskInfo = async (req, res, next) => {
     const body = req.body;
-    console.log(body);
-    if (body.hasOwnProperty('_id') && (body.hasOwnProperty('text') || body.hasOwnProperty('isCheck'))) {
+    try {
         Task.findOneAndUpdate({_id: body._id}, {text: body.text, isCheck: body.isCheck}).then();
         res.json()
-    } else {
+    }
+    catch (err) {
         res.status(422).send('Error! Params not correct');
     }
 };
