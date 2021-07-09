@@ -1,8 +1,8 @@
-const Task = require("../../db/models/task/index");
+const Events = require("../../db/models/events");
 
-module.exports.getAllTasks = async (req, res, next) => {
+module.exports.getAllEvents = async (req, res, next) => {
     try {
-        const result = await Task.find()
+        const result = await Events.find()
         res.json(result)
     }
     catch(err) {
@@ -11,25 +11,31 @@ module.exports.getAllTasks = async (req, res, next) => {
 
 };
 
-module.exports.createNewTask = async (req, res, next) => {
-    const {text} = req.body;
-    const {backgroundColor} = req.body;
+module.exports.createNewEvent = async (req, res, next) => {
+    const {name, doctor, date, issues} = req.body;
+    // const {name} = req.body;
+    // const {doctor} = req.body;
+    // const {date} = req.body;
+    // const {issues} = req.body;
     try {
-        const task = new Task({
-            text: text,
-            backgroundColor: backgroundColor
+        const event = new Events({
+            name: name,
+            doctor: doctor,
+            date: date,
+            issues: issues
         });
-        const result = await task.save()
+        // const event = new Events(req.body);
+        const result = await event.save()
         res.json(result)
     } catch (err) {
         res.status(422).json(err.message);
     }
 };
 
-module.exports.changeTaskInfo = async (req, res, next) => {
+module.exports.changeEvent = async (req, res, next) => {
     const body = req.body;
     try {
-        Task.findOneAndUpdate({_id: body._id}, {text: body.text, isCheck: body.isCheck}).then();
+        Events.findOneAndUpdate({_id: body._id}, {text: body.text, isCheck: body.isCheck}).then();
         res.json()
     }
     catch (err) {
@@ -37,9 +43,9 @@ module.exports.changeTaskInfo = async (req, res, next) => {
     }
 };
 
-module.exports.deleteTask = async (req, res, next) => {
+module.exports.deleteEvent = async (req, res, next) => {
     try {
-        Task.findOneAndRemove({_id: req.query._id}).then(result => {
+        Events.findOneAndRemove({_id: req.query._id}).then(result => {
             res.status(200).send('')
         });
     }
